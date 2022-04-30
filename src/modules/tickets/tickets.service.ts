@@ -34,7 +34,7 @@ export class TicketsService {
       where: {
         id: id,
       },
-      relations: ['place'],
+      relations: ['place', 'attendant_user', 'creator_user'],
     });
     if (!foundTicket) {
       throw new Error('Ticket_NOT_FOUND');

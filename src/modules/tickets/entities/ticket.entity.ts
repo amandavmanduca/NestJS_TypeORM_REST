@@ -1,5 +1,6 @@
 import { Base } from 'src/modules/bases/entities/base.entity';
 import { Place } from 'src/modules/places/entities/place.entity';
+import { User } from 'src/modules/users/entities/user.entity';
 import {
   AfterInsert,
   AfterLoad,
@@ -8,6 +9,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 
 export enum TicketStatusType {
@@ -31,6 +33,17 @@ export class Ticket extends Base {
 
   title: string;
 
-  // attendant_user: User || Responsible ?
-  // creator_user: User || Responsible ?
+  @ManyToOne(() => User, (item) => item.ticket_to_attend, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
+  @JoinColumn()
+  attendant_user: User;
+
+  @ManyToOne(() => User, (item) => item.created_tickets, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
+  @JoinColumn()
+  creator_user: User;
 }
