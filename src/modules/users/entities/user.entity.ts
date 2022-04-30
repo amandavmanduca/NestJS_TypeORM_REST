@@ -1,4 +1,3 @@
-import { Address } from 'src/modules/address.entity';
 import { Base } from 'src/modules/bases/entities/base.entity';
 import { Column, Entity } from 'typeorm';
 
@@ -12,10 +11,4 @@ export class User extends Base {
 
   @Column()
   password: string;
-
-  @Column()
-  telephone: string;
-
-  @Column(() => Address)
-  address: Address;
 }
