@@ -26,7 +26,9 @@ export class PlaceSubscriber implements EntitySubscriberInterface<Place> {
       const unfinishedTicket = place.tickets.find(
         (ticket) => ticket.status !== TicketStatusType.FINISHED,
       );
-      if (!unfinishedTicket) {
+      if (unfinishedTicket) {
+        await updateUnfinishedTicket(event, unfinishedTicket);
+      } else {
         await createNewTicket(event);
       }
     }
@@ -41,4 +43,16 @@ async function createNewTicket(event: UpdateEvent<Place>) {
     },
   });
   await event.manager.getRepository(Ticket).save(newTicket);
+}
+
+async function updateUnfinishedTicket(
+  event: UpdateEvent<Place>,
+  unfinishedTicket: Ticket,
+) {
+  const currentTicket = event.manager.getRepository(Ticket).create({
+    ...unfinishedTicket,
+    status: TicketStatusType.PENDING,
+    updatedAt: new Date(),
+  });
+  await event.manager.getRepository(Ticket).save(currentTicket);
 }
