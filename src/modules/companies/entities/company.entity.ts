@@ -1,7 +1,8 @@
 import { Base } from 'src/modules/bases/entities/base.entity';
 import { Place } from 'src/modules/places/entities/place.entity';
 import { Responsible } from 'src/modules/responsibles/entities/responsible.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { User } from 'src/modules/users/entities/user.entity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity()
 export class Company extends Base {
@@ -19,4 +20,10 @@ export class Company extends Base {
 
   @OneToMany(() => Responsible, (item) => item.company, { nullable: true })
   responsibles: Responsible[];
+
+  @ManyToOne(() => User, (item) => item.companies, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  user: User;
 }
