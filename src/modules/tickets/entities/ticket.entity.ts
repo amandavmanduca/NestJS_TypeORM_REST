@@ -30,4 +30,7 @@ export class Ticket extends Base {
   place: Place;
 
   title: string;
+
+  // attendant_user: User || Responsible ?
+  // creator_user: User || Responsible ?
 }

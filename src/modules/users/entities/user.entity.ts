@@ -1,3 +1,5 @@
+import { Exclude } from 'class-transformer';
+import { hashPasswordTransform } from 'src/common/crypto';
 import { Base } from 'src/modules/bases/entities/base.entity';
 import { Company } from 'src/modules/companies/entities/company.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
@@ -10,7 +12,10 @@ export class User extends Base {
   @Column()
   email: string;
 
-  @Column()
+  @Exclude()
+  @Column({
+    transformer: hashPasswordTransform,
+  })
   password: string;
 
   @OneToMany(() => Company, (item) => item.user, { nullable: true })
