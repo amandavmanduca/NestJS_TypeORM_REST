@@ -8,6 +8,7 @@ import { BasesModule } from './modules/bases/bases.module';
 import { CompaniesModule } from './modules/companies/companies.module';
 import { PlacesModule } from './modules/places/places.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
+import { ResponsiblesModule } from './modules/responsibles/responsibles.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { TicketsModule } from './modules/tickets/tickets.module';
     CompaniesModule,
     PlacesModule,
     TicketsModule,
+    ResponsiblesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
