@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { title } from 'process';
 import { Repository } from 'typeorm';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
@@ -18,8 +19,14 @@ export class TicketsService {
   }
 
   async findAll(): Promise<Ticket[]> {
-    const Tickets: Ticket[] = await this.ticketRepository.find();
-    return Tickets;
+    const tickets: Ticket[] = await this.ticketRepository.find({
+      relations: ['place'],
+    });
+    const ticketsWithTitle: Ticket[] = tickets?.map((ticket: Ticket) => {
+      ticket.title = ticket.id + ' ' + ticket.place.name;
+      return ticket;
+    });
+    return ticketsWithTitle;
   }
 
   async findOne(id: string): Promise<Ticket> {
@@ -32,6 +39,7 @@ export class TicketsService {
     if (!foundTicket) {
       throw new Error('Ticket_NOT_FOUND');
     }
+    foundTicket.title = foundTicket.id + ' ' + foundTicket.place.name;
     return foundTicket;
   }
 

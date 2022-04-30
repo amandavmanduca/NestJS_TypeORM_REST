@@ -1,6 +1,14 @@
 import { Base } from 'src/modules/bases/entities/base.entity';
 import { Place } from 'src/modules/places/entities/place.entity';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  AfterInsert,
+  AfterLoad,
+  AfterUpdate,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+} from 'typeorm';
 
 export enum TicketStatusType {
   PENDING = 'PENDING',
@@ -10,9 +18,6 @@ export enum TicketStatusType {
 
 @Entity()
 export class Ticket extends Base {
-  @Column({ nullable: true })
-  title: string;
-
   @Column({
     type: 'enum',
     enum: TicketStatusType,
@@ -23,4 +28,6 @@ export class Ticket extends Base {
   @ManyToOne(() => Place, (item) => item.tickets, { onDelete: 'CASCADE' })
   @JoinColumn()
   place: Place;
+
+  title: string;
 }
