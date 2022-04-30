@@ -27,7 +27,7 @@ export class PlacesService {
       where: {
         id: id,
       },
-      relations: ['tickets'],
+      relations: ['tickets', 'company'],
     });
     if (!foundPlace) {
       throw new Error('PLACE_NOT_FOUND');

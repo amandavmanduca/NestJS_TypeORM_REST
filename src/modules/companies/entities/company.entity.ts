@@ -1,5 +1,6 @@
 import { Base } from 'src/modules/bases/entities/base.entity';
-import { Column, Entity } from 'typeorm';
+import { Place } from 'src/modules/places/entities/place.entity';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity()
 export class Company extends Base {
@@ -11,4 +12,7 @@ export class Company extends Base {
 
   @Column()
   description: string;
+
+  @OneToMany(() => Place, (item) => item.company, { nullable: true })
+  places: Place[];
 }

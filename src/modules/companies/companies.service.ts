@@ -28,6 +28,7 @@ export class CompaniesService {
       where: {
         id: id,
       },
+      relations: ['places'],
     });
     if (!foundCompany) {
       throw new Error('COMPANY_NOT_FOUND');

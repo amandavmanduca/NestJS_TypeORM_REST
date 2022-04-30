@@ -20,7 +20,7 @@ export class Ticket extends Base {
   })
   status: TicketStatusType;
 
-  @ManyToOne(() => Place, (item) => item.tickets)
+  @ManyToOne(() => Place, (item) => item.tickets, { onDelete: 'CASCADE' })
   @JoinColumn()
   place: Place;
 }
