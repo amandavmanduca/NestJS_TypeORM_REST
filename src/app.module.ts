@@ -9,6 +9,7 @@ import { CompaniesModule } from './modules/companies/companies.module';
 import { PlacesModule } from './modules/places/places.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
 import { ResponsiblesModule } from './modules/responsibles/responsibles.module';
+import { AuthModule } from './modules/auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -32,6 +33,7 @@ import { ResponsiblesModule } from './modules/responsibles/responsibles.module';
     PlacesModule,
     TicketsModule,
     ResponsiblesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
