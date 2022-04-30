@@ -1,5 +1,6 @@
 import { Base } from 'src/modules/bases/entities/base.entity';
-import { Column, Entity } from 'typeorm';
+import { Place } from 'src/modules/places/entities/place.entity';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 export enum TicketStatusType {
   PENDING = 'PENDING',
@@ -18,4 +19,8 @@ export class Ticket extends Base {
     default: TicketStatusType.PENDING,
   })
   status: TicketStatusType;
+
+  @ManyToOne(() => Place, (item) => item.tickets)
+  @JoinColumn()
+  place: Place;
 }
