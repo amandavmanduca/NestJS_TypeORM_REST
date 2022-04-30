@@ -29,6 +29,7 @@ export class AuthService {
     return {
       user: user,
       token: this.jwtService.sign(payload),
+      session_duration_in_seconds: process.env.SESSION_DURATION_IN_SECONDS,
     };
   }
 }
