@@ -28,7 +28,7 @@ export class UsersService {
       where: {
         id: id,
       },
-      relations: ['companies'],
+      relations: ['companies', 'ticket_to_attend', 'created_tickets'],
     });
     if (!foundUser) {
       throw new Error('USER_NOT_FOUND');

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Responsible } from '../responsibles/entities/responsible.entity';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { Company } from './entities/company.entity';
@@ -9,12 +10,29 @@ import { Company } from './entities/company.entity';
 export class CompaniesService {
   constructor(
     @InjectRepository(Company) private companyRepository: Repository<Company>,
+    @InjectRepository(Responsible)
+    private responsibleRepository: Repository<Responsible>,
   ) {}
   async create(createCompanyDto: CreateCompanyDto): Promise<Company> {
     const createdCompany: Company =
       this.companyRepository.create(createCompanyDto);
 
     const savedCompany = await this.companyRepository.save(createdCompany);
+
+    if (createCompanyDto.responsibles) {
+      await Promise.all(
+        createCompanyDto.responsibles.map(async (responsible: Responsible) => {
+          const createdResponsible = this.responsibleRepository.create({
+            ...responsible,
+            company: {
+              id: savedCompany.id,
+            },
+          });
+          await this.responsibleRepository.save(createdResponsible);
+        }),
+      );
+    }
+
     return savedCompany;
   }
 
