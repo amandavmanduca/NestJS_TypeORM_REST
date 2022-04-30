@@ -22,14 +22,14 @@ export class Responsible extends Base {
   isPlaceMainResponsible: boolean;
 
   @ManyToOne(() => Company, (item) => item.responsibles, {
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     nullable: true,
   })
   @JoinColumn()
   company: Company;
 
   @ManyToOne(() => Place, (item) => item.responsibles, {
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     nullable: true,
   })
   @JoinColumn()
