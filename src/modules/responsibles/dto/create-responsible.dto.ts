@@ -7,5 +7,7 @@ export class CreateResponsibleDto {
 
   address: Address;
 
-  isMainResponsible: boolean;
+  isCompanyMainResponsible: boolean;
+
+  isPlaceMainResponsible: boolean;
 }
