@@ -6,4 +6,6 @@ export class CreateResponsibleDto {
   telephone: string;
 
   address: Address;
+
+  isMainResponsible: boolean;
 }

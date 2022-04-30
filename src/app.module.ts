@@ -9,7 +9,6 @@ import { CompaniesModule } from './modules/companies/companies.module';
 import { PlacesModule } from './modules/places/places.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
 import { ResponsiblesModule } from './modules/responsibles/responsibles.module';
-
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -25,7 +24,7 @@ import { ResponsiblesModule } from './modules/responsibles/responsibles.module';
       host: process.env.DB_HOST,
       entities: ['dist/**/*.entity{.ts,.js}'],
       migrations: ['dist/**/migrations/*.js'],
-      subscribers: ['dist/**/subscriber/*.js'],
+      subscribers: ['dist/**/*.subscriber{.ts,.js}'],
     }),
     UsersModule,
     BasesModule,

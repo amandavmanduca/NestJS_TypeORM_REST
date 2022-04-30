@@ -32,6 +32,7 @@ export class ResponsiblesService {
         where: {
           id: id,
         },
+        relations: ['company'],
       });
     if (!foundResponsible) {
       throw new Error('RESPONSIBLE_NOT_FOUND');
