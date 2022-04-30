@@ -1,6 +1,8 @@
-import { Address } from 'src/modules/address.entity';
+import { Exclude } from 'class-transformer';
+import { hashPasswordTransform } from 'src/common/crypto';
 import { Base } from 'src/modules/bases/entities/base.entity';
-import { Column, Entity } from 'typeorm';
+import { Company } from 'src/modules/companies/entities/company.entity';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity()
 export class User extends Base {
@@ -10,12 +12,12 @@ export class User extends Base {
   @Column()
   email: string;
 
-  @Column()
+  @Exclude()
+  @Column({
+    transformer: hashPasswordTransform,
+  })
   password: string;
 
-  @Column()
-  telephone: string;
-
-  @Column(() => Address)
-  address: Address;
+  @OneToMany(() => Company, (item) => item.user, { nullable: true })
+  companies: Company[];
 }

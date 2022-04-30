@@ -8,7 +8,8 @@ import { BasesModule } from './modules/bases/bases.module';
 import { CompaniesModule } from './modules/companies/companies.module';
 import { PlacesModule } from './modules/places/places.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
-
+import { ResponsiblesModule } from './modules/responsibles/responsibles.module';
+import { AuthModule } from './modules/auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -24,13 +25,15 @@ import { TicketsModule } from './modules/tickets/tickets.module';
       host: process.env.DB_HOST,
       entities: ['dist/**/*.entity{.ts,.js}'],
       migrations: ['dist/**/migrations/*.js'],
-      subscribers: ['dist/**/subscriber/*.js'],
+      subscribers: ['dist/**/*.subscriber{.ts,.js}'],
     }),
     UsersModule,
     BasesModule,
     CompaniesModule,
     PlacesModule,
     TicketsModule,
+    ResponsiblesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

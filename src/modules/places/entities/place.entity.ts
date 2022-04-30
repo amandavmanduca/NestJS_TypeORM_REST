@@ -1,6 +1,9 @@
 import { Address } from 'src/modules/address.entity';
 import { Base } from 'src/modules/bases/entities/base.entity';
-import { Column, Entity } from 'typeorm';
+import { Company } from 'src/modules/companies/entities/company.entity';
+import { Responsible } from 'src/modules/responsibles/entities/responsible.entity';
+import { Ticket } from 'src/modules/tickets/entities/ticket.entity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity()
 export class Place extends Base {
@@ -9,4 +12,14 @@ export class Place extends Base {
 
   @Column(() => Address)
   address: Address;
+
+  @OneToMany(() => Ticket, (item) => item.place, { nullable: true })
+  tickets: Ticket[];
+
+  @ManyToOne(() => Company, (item) => item.places, { onDelete: 'CASCADE' })
+  @JoinColumn()
+  company: Company;
+
+  @OneToMany(() => Responsible, (item) => item.place, { nullable: true })
+  responsibles: Responsible[];
 }
