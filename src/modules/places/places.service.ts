@@ -127,7 +127,6 @@ export class PlacesService {
   ) {
     const currentTicket = this.ticketRepository.create({
       ...unfinishedTicket,
-      status: TicketStatusType.PENDING,
       attendant_user: {
         id: updatePlaceDto.attendant_userId,
       },

@@ -18,4 +18,7 @@ export class Address {
 
   @Column({ nullable: true })
   complement?: string;
+
+  @Column({ nullable: true })
+  neighborhood?: string;
 }
