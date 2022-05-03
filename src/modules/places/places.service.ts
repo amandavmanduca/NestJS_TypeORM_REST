@@ -22,20 +22,70 @@ export class PlacesService {
     const savedPlace = await this.placeRepository.save(createdPlace);
 
     if (createPlaceDto.responsibles) {
-      await Promise.all(
-        createPlaceDto.responsibles.map(async (responsible: Responsible) => {
-          const createdResponsible = this.responsibleRepository.create({
-            ...responsible,
-            place: {
-              id: savedPlace.id,
-            },
-          });
-          await this.responsibleRepository.save(createdResponsible);
-        }),
+      await this.handleCreatePlaceResponsibles(
+        savedPlace.id,
+        createPlaceDto.responsibles,
       );
     }
 
     return savedPlace;
+  }
+
+  async handleCreatePlaceResponsibles(
+    placeId: string,
+    responsiblesArray: Responsible[],
+  ) {
+    await Promise.all(
+      responsiblesArray.map(async (responsible: Responsible) => {
+        const createdResponsible = this.responsibleRepository.create({
+          ...responsible,
+          place: {
+            id: placeId,
+          },
+        });
+        await this.responsibleRepository.save(createdResponsible);
+      }),
+    );
+  }
+
+  async handleUpdatePlaceResponsibles(
+    placeId: string,
+    responsiblesArray: Responsible[],
+    previousResponsibles: Responsible[],
+  ) {
+    let responsiblesToRemove: Responsible[] = previousResponsibles;
+    await Promise.all(
+      responsiblesArray.map(async (responsible: Responsible) => {
+        if (responsible.id) {
+          responsiblesToRemove = responsiblesToRemove?.filter(
+            (res) => res.id !== responsible.id,
+          );
+          const foundResponsible = this.responsibleRepository.findOne({
+            where: {
+              id: responsible.id,
+            },
+          });
+          const createdResponsible = this.responsibleRepository.create({
+            ...foundResponsible,
+            ...responsible,
+          });
+          await this.responsibleRepository.save(createdResponsible);
+        } else {
+          const createdResponsible = this.responsibleRepository.create({
+            ...responsible,
+            place: {
+              id: placeId,
+            },
+          });
+          await this.responsibleRepository.save(createdResponsible);
+        }
+      }),
+    );
+    await Promise.all(
+      responsiblesToRemove?.map(async (oldResponsible) => {
+        await this.responsibleRepository.delete(oldResponsible.id);
+      }),
+    );
   }
 
   async findAll(): Promise<Place[]> {
@@ -61,7 +111,7 @@ export class PlacesService {
       where: {
         id: id,
       },
-      relations: ['tickets'],
+      relations: ['tickets', 'responsibles'],
     });
     if (!foundPlace) {
       throw new Error('PLACE_NOT_FOUND');
@@ -75,6 +125,14 @@ export class PlacesService {
 
     if (foundPlace.tickets) {
       await this.handleUpdatedPlaceTickets(savedPlace, updatePlaceDto);
+    }
+
+    if (updatePlaceDto.responsibles) {
+      await this.handleUpdatePlaceResponsibles(
+        savedPlace.id,
+        updatePlaceDto.responsibles,
+        foundPlace.responsibles,
+      );
     }
     return savedPlace;
   }

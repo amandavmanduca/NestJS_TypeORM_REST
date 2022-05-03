@@ -16,24 +16,30 @@ export class ResponsibleSubscriber
 
   async beforeInsert(event: InsertEvent<Responsible>) {
     if (
-      event.entity.isCompanyMainResponsible === true &&
-      event.entity.company.id
+      event?.entity?.company?.id &&
+      event?.entity?.isCompanyMainResponsible === true
     ) {
       await handleUniqueCompanyResponsible(event);
     }
-    if (event.entity.isPlaceMainResponsible === true && event.entity.place.id) {
+    if (
+      event?.entity?.isPlaceMainResponsible === true &&
+      event?.entity?.place?.id
+    ) {
       await handleUniquePlaceResponsible(event);
     }
   }
 
   async beforeUpdate(event: UpdateEvent<Responsible>) {
     if (
-      event.entity.isCompanyMainResponsible === true &&
-      event.entity.company.id
+      event?.entity?.company?.id &&
+      event?.entity?.isCompanyMainResponsible === true
     ) {
       await handleUniqueCompanyResponsible(event);
     }
-    if (event.entity.isPlaceMainResponsible === true && event.entity.place.id) {
+    if (
+      event?.entity?.isPlaceMainResponsible === true &&
+      event?.entity?.place?.id
+    ) {
       await handleUniquePlaceResponsible(event);
     }
   }
