@@ -6,13 +6,16 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { ResponsiblesService } from './responsibles.service';
 import { CreateResponsibleDto } from './dto/create-responsible.dto';
 import { UpdateResponsibleDto } from './dto/update-responsible.dto';
 import { Responsible } from './entities/responsible.entity';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('responsibles')
+@UseGuards(JwtAuthGuard)
 export class ResponsiblesController {
   constructor(private readonly responsiblesService: ResponsiblesService) {}
 
