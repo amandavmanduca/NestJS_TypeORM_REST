@@ -3,6 +3,8 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcryptjs';
 import { User } from '../users/entities/user.entity';
+import { Company } from '../companies/entities/company.entity';
+import { Ticket } from '../tickets/entities/ticket.entity';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +13,20 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, pass: string): Promise<any> {
+  async validateUser(
+    username: string,
+    pass: string,
+  ): Promise<{
+    name: string;
+    email: string;
+    companies: Company[];
+    ticket_to_attend: Ticket[];
+    created_tickets: Ticket[];
+    id?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    deletedAt?: Date;
+  } | null> {
     const user = await this.usersService.findByEmail(username);
     if (user) {
       const isValidPassword = compareSync(pass, user.password);
