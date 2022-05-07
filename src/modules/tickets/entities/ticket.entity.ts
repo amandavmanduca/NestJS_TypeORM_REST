@@ -1,16 +1,7 @@
 import { Base } from 'src/modules/bases/entities/base.entity';
 import { Place } from 'src/modules/places/entities/place.entity';
 import { User } from 'src/modules/users/entities/user.entity';
-import {
-  AfterInsert,
-  AfterLoad,
-  AfterUpdate,
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 export enum TicketStatusType {
   PENDING = 'PENDING',
