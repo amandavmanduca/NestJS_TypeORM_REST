@@ -20,20 +20,70 @@ export class CompaniesService {
     const savedCompany = await this.companyRepository.save(createdCompany);
 
     if (createCompanyDto.responsibles) {
-      await Promise.all(
-        createCompanyDto.responsibles.map(async (responsible: Responsible) => {
-          const createdResponsible = this.responsibleRepository.create({
-            ...responsible,
-            company: {
-              id: savedCompany.id,
-            },
-          });
-          await this.responsibleRepository.save(createdResponsible);
-        }),
+      await this.handleCreateCompanyResponsibles(
+        savedCompany.id,
+        createCompanyDto.responsibles,
       );
     }
 
     return savedCompany;
+  }
+
+  async handleCreateCompanyResponsibles(
+    companyId: string,
+    responsiblesArray: Responsible[],
+  ) {
+    await Promise.all(
+      responsiblesArray.map(async (responsible: Responsible) => {
+        const createdResponsible = this.responsibleRepository.create({
+          ...responsible,
+          company: {
+            id: companyId,
+          },
+        });
+        await this.responsibleRepository.save(createdResponsible);
+      }),
+    );
+  }
+
+  async handleUpdateCompanyResponsibles(
+    companyId: string,
+    responsiblesArray: Responsible[],
+    previousResponsibles: Responsible[],
+  ) {
+    let responsiblesToRemove: Responsible[] = previousResponsibles;
+    await Promise.all(
+      responsiblesArray.map(async (responsible: Responsible) => {
+        if (responsible.id) {
+          responsiblesToRemove = responsiblesToRemove?.filter(
+            (res) => res.id !== responsible.id,
+          );
+          const foundResponsible = this.responsibleRepository.findOne({
+            where: {
+              id: responsible.id,
+            },
+          });
+          const createdResponsible = this.responsibleRepository.create({
+            ...foundResponsible,
+            ...responsible,
+          });
+          await this.responsibleRepository.save(createdResponsible);
+        } else {
+          const createdResponsible = this.responsibleRepository.create({
+            ...responsible,
+            company: {
+              id: companyId,
+            },
+          });
+          await this.responsibleRepository.save(createdResponsible);
+        }
+      }),
+    );
+    await Promise.all(
+      responsiblesToRemove?.map(async (oldResponsible) => {
+        await this.responsibleRepository.delete(oldResponsible.id);
+      }),
+    );
   }
 
   async findAll(): Promise<Company[]> {
@@ -70,6 +120,14 @@ export class CompaniesService {
     const savedCompany: Company = await this.companyRepository.save(
       updatedCompany,
     );
+
+    if (updateCompanyDto.responsibles) {
+      await this.handleUpdateCompanyResponsibles(
+        savedCompany.id,
+        updateCompanyDto.responsibles,
+        savedCompany.responsibles,
+      );
+    }
     return savedCompany;
   }
 
