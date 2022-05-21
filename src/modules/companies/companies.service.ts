@@ -80,9 +80,11 @@ export class CompaniesService {
       }),
     );
     await Promise.all(
-      responsiblesToRemove?.map(async (oldResponsible) => {
-        await this.responsibleRepository.delete(oldResponsible.id);
-      }),
+      responsiblesToRemove?.map(
+        async (oldResponsible) =>
+          oldResponsible.id &&
+          (await this.responsibleRepository.delete(oldResponsible.id)),
+      ),
     );
   }
 
