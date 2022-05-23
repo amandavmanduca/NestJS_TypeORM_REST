@@ -40,6 +40,8 @@ export class TicketsService {
       throw new Error('Ticket_NOT_FOUND');
     }
     foundTicket.title = foundTicket.id + ' ' + foundTicket.place.name;
+    delete foundTicket?.attendant_user?.password;
+    delete foundTicket?.creator_user?.password;
     return foundTicket;
   }
 
