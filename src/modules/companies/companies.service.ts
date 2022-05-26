@@ -106,7 +106,7 @@ export class CompaniesService {
       where: {
         id: id,
       },
-      relations: ['places', 'responsibles', 'user'],
+      relations: ['places', 'responsibles'],
     });
     if (!foundCompany) {
       throw new NotFoundException('Empresa não encontrada');
