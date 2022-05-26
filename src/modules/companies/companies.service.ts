@@ -1,5 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { checkValidUUID } from 'src/common/checkValidUUID';
 import { Repository } from 'typeorm';
 import { Responsible } from '../responsibles/entities/responsible.entity';
 import { CreateCompanyDto } from './dto/create-company.dto';
@@ -94,6 +99,9 @@ export class CompaniesService {
   }
 
   async findOne(id: string): Promise<Company> {
+    if (!id || checkValidUUID(id) === false) {
+      throw new BadRequestException('Campos inválidos');
+    }
     const foundCompany: Company = await this.companyRepository.findOne({
       where: {
         id: id,
@@ -101,19 +109,22 @@ export class CompaniesService {
       relations: ['places', 'responsibles', 'user'],
     });
     if (!foundCompany) {
-      throw new Error('COMPANY_NOT_FOUND');
+      throw new NotFoundException('Empresa não encontrada');
     }
     return foundCompany;
   }
 
   async update(id: string, updateCompanyDto: UpdateCompanyDto) {
+    if (!id || checkValidUUID(id) === false) {
+      throw new BadRequestException('Campos inválidos');
+    }
     const foundCompany: Company = await this.companyRepository.findOne({
       where: {
         id: id,
       },
     });
     if (!foundCompany) {
-      throw new Error('COMPANY_NOT_FOUND');
+      throw new NotFoundException('Empresa não encontrada');
     }
     const updatedCompany: Company = this.companyRepository.create({
       ...foundCompany,
@@ -134,13 +145,16 @@ export class CompaniesService {
   }
 
   async remove(id: string) {
+    if (!id || checkValidUUID(id) === false) {
+      throw new BadRequestException('Campos inválidos');
+    }
     const foundCompany: Company = await this.companyRepository.findOne({
       where: {
         id: id,
       },
     });
     if (!foundCompany) {
-      throw new Error('COMPANY_NOT_FOUND');
+      throw new NotFoundException('Empresa não encontrada');
     }
     await this.companyRepository.delete(foundCompany.id);
   }

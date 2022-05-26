@@ -37,7 +37,6 @@ export class UsersService {
 
   async findOne(id: string): Promise<User> {
     if (!id || checkValidUUID(id) === false) {
-      console.log('entrei no if');
       throw new BadRequestException('Campos inválidos');
     }
     const foundUser: User = await this.userRepository.findOne({

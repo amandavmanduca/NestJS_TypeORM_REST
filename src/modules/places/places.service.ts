@@ -1,5 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { checkValidUUID } from 'src/common/checkValidUUID';
 import { Repository } from 'typeorm';
 import { Responsible } from '../responsibles/entities/responsible.entity';
 import { Ticket, TicketStatusType } from '../tickets/entities/ticket.entity';
@@ -17,6 +22,9 @@ export class PlacesService {
     private ticketRepository: Repository<Ticket>,
   ) {}
   async create(createPlaceDto: CreatePlaceDto): Promise<Place> {
+    if (!createPlaceDto.address || !createPlaceDto.name) {
+      throw new BadRequestException('Campos inválidos');
+    }
     const createdPlace: Place = this.placeRepository.create(createPlaceDto);
 
     const savedPlace = await this.placeRepository.save(createdPlace);
@@ -37,6 +45,13 @@ export class PlacesService {
   ) {
     await Promise.all(
       responsiblesArray.map(async (responsible: Responsible) => {
+        if (
+          !responsible.address ||
+          !responsible.name ||
+          !responsible.telephone
+        ) {
+          throw new BadRequestException('Campos inválidos');
+        }
         const createdResponsible = this.responsibleRepository.create({
           ...responsible,
           place: {
@@ -96,6 +111,9 @@ export class PlacesService {
   }
 
   async findOne(id: string): Promise<Place> {
+    if (!id || checkValidUUID(id) === false) {
+      throw new BadRequestException('Campos inválidos');
+    }
     const foundPlace: Place = await this.placeRepository.findOne({
       where: {
         id: id,
@@ -103,12 +121,15 @@ export class PlacesService {
       relations: ['tickets', 'company', 'responsibles'],
     });
     if (!foundPlace) {
-      throw new Error('PLACE_NOT_FOUND');
+      throw new NotFoundException('Local não encontrado');
     }
     return foundPlace;
   }
 
   async update(id: string, updatePlaceDto: UpdatePlaceDto): Promise<Place> {
+    if (!id || checkValidUUID(id) === false) {
+      throw new BadRequestException('Campos inválidos');
+    }
     const foundPlace: Place = await this.placeRepository.findOne({
       where: {
         id: id,
@@ -116,7 +137,7 @@ export class PlacesService {
       relations: ['tickets', 'responsibles'],
     });
     if (!foundPlace) {
-      throw new Error('PLACE_NOT_FOUND');
+      throw new NotFoundException('Local não encontrado');
     }
     const updatedPlace: Place = this.placeRepository.create({
       ...foundPlace,
@@ -140,13 +161,16 @@ export class PlacesService {
   }
 
   async remove(id: string) {
+    if (!id || checkValidUUID(id) === false) {
+      throw new BadRequestException('Campos inválidos');
+    }
     const foundPlace: Place = await this.placeRepository.findOne({
       where: {
         id: id,
       },
     });
     if (!foundPlace) {
-      throw new Error('PLACE_NOT_FOUND');
+      throw new NotFoundException('Local não encontrado');
     }
     await this.placeRepository.delete(foundPlace.id);
   }
