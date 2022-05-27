@@ -18,7 +18,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   ): Promise<{
     name: string;
     email: string;
-    companies: Company[];
     ticket_to_attend: Ticket[];
     created_tickets: Ticket[];
     id?: string;
@@ -28,7 +27,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }> {
     const user = await this.authService.validateUser(username, password);
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Não autorizado');
     }
     return user;
   }

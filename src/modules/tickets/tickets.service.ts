@@ -1,6 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { title } from 'process';
+import { checkValidUUID } from 'src/common/checkValidUUID';
 import { Repository } from 'typeorm';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
@@ -12,6 +17,13 @@ export class TicketsService {
     @InjectRepository(Ticket) private ticketRepository: Repository<Ticket>,
   ) {}
   async create(createTicketDto: CreateTicketDto): Promise<Ticket> {
+    if (
+      !createTicketDto.attendant_user ||
+      !createTicketDto.creator_user ||
+      !createTicketDto.status
+    ) {
+      throw new BadRequestException('Campos inválidos');
+    }
     const createdTicket: Ticket = this.ticketRepository.create(createTicketDto);
 
     const savedTicket = await this.ticketRepository.save(createdTicket);
@@ -30,6 +42,9 @@ export class TicketsService {
   }
 
   async findOne(id: string): Promise<Ticket> {
+    if (!id || checkValidUUID(id) === false) {
+      throw new BadRequestException('Campos inválidos');
+    }
     const foundTicket: Ticket = await this.ticketRepository.findOne({
       where: {
         id: id,
@@ -37,20 +52,25 @@ export class TicketsService {
       relations: ['place', 'attendant_user', 'creator_user'],
     });
     if (!foundTicket) {
-      throw new Error('Ticket_NOT_FOUND');
+      throw new NotFoundException('Ticket não encontrado');
     }
     foundTicket.title = foundTicket.id + ' ' + foundTicket.place.name;
+    delete foundTicket?.attendant_user?.password;
+    delete foundTicket?.creator_user?.password;
     return foundTicket;
   }
 
   async update(id: string, updateTicketDto: UpdateTicketDto): Promise<Ticket> {
+    if (!id || checkValidUUID(id) === false) {
+      throw new BadRequestException('Campos inválidos');
+    }
     const foundTicket: Ticket = await this.ticketRepository.findOne({
       where: {
         id: id,
       },
     });
     if (!foundTicket) {
-      throw new Error('Ticket_NOT_FOUND');
+      throw new NotFoundException('Ticket não encontrado');
     }
     const updatedTicket: Ticket = this.ticketRepository.create({
       ...foundTicket,
@@ -61,13 +81,16 @@ export class TicketsService {
   }
 
   async remove(id: string) {
+    if (!id || checkValidUUID(id) === false) {
+      throw new BadRequestException('Campos inválidos');
+    }
     const foundTicket: Ticket = await this.ticketRepository.findOne({
       where: {
         id: id,
       },
     });
     if (!foundTicket) {
-      throw new Error('Ticket_NOT_FOUND');
+      throw new NotFoundException('Ticket não encontrado');
     }
     await this.ticketRepository.delete(foundTicket.id);
   }

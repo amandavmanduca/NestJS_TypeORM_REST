@@ -3,7 +3,6 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcryptjs';
 import { User } from '../users/entities/user.entity';
-import { Company } from '../companies/entities/company.entity';
 import { Ticket } from '../tickets/entities/ticket.entity';
 
 @Injectable()
@@ -19,7 +18,6 @@ export class AuthService {
   ): Promise<{
     name: string;
     email: string;
-    companies: Company[];
     ticket_to_attend: Ticket[];
     created_tickets: Ticket[];
     id?: string;
