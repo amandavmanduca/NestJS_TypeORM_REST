@@ -8,8 +8,8 @@ import { BasesModule } from './modules/bases/bases.module';
 import { CompaniesModule } from './modules/companies/companies.module';
 import { PlacesModule } from './modules/places/places.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
-import { ResponsiblesModule } from './modules/responsibles/responsibles.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { ResponsiblesModule } from './modules/responsibles/responsibles.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -21,7 +21,7 @@ import { AuthModule } from './modules/auth/auth.module';
       autoLoadEntities: true,
       synchronize: true,
       logging: true,
-      port: 5432,
+      port: Number(process.env.DB_PORT) || 5432,
       host: process.env.DB_HOST,
       entities: ['dist/**/*.entity{.ts,.js}'],
       migrations: ['dist/**/migrations/*.js'],
