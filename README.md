@@ -5,11 +5,25 @@
 NodeJS REST API built with [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 
+## Techs
+- NodeJS
+- NestJS
+- TypeScript
+- TypeORM
+- Postgresql
+- Passport JWT
+- Bcrypt
+
+
 ## Installation
 
 ```bash
 $ yarn install
 ```
+
+
+## Configure enviroment variables
+Follow .env.example file instructions
 
 ## Running the app
 
@@ -185,3 +199,7 @@ Update One Ticket `PATCH: http://localhost:3003/tickets/{ticketId}`
 	"status": "IN_PROGRESS"
 }
 ```
+
+
+
+This is a challenge by Coodesh
